@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GetPlanets {
 
-    public List<Planet> planets;
+    private List<Planet> planets;
 
     public GetPlanets() { super(); planets = new ArrayList<>(); }
 
