@@ -12,5 +12,5 @@ import retrofit2.http.GET;
 public interface PlanetsAPI {
 
     @GET("/planets")
-    Call<PlanetsResponse> getPlanets();
+    Call<GetPlanets> getPlanets();
 }

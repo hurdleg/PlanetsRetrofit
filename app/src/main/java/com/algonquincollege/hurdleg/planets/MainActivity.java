@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.algonquincollege.hurdleg.planets.model.Planet;
 import com.algonquincollege.hurdleg.planets.retrofit.PlanetsAPI;
-import com.algonquincollege.hurdleg.planets.retrofit.PlanetsResponse;
+import com.algonquincollege.hurdleg.planets.retrofit.GetPlanets;
 
 import java.util.List;
 
@@ -94,16 +94,16 @@ public class MainActivity extends ListActivity {
 
         PlanetsAPI api = retrofit.create(PlanetsAPI.class);
 
-        Call<PlanetsResponse> call = api.getPlanets();
-        call.enqueue(new Callback<PlanetsResponse>() {
+        Call<GetPlanets> call = api.getPlanets();
+        call.enqueue(new Callback<GetPlanets>() {
             @Override
-            public void onResponse(Call<PlanetsResponse> call, Response<PlanetsResponse> response) {
+            public void onResponse(Call<GetPlanets> call, Response<GetPlanets> response) {
                 planetList = response.body().getPlanets();
                 updateDisplay();
             }
 
             @Override
-            public void onFailure(Call<PlanetsResponse> call, Throwable t) {
+            public void onFailure(Call<GetPlanets> call, Throwable t) {
                 Log.e( "RETROFIT", "Retrofit Error: " + t.toString() );
                 Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
             }

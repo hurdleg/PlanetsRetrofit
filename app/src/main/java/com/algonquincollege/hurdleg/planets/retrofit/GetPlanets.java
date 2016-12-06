@@ -11,11 +11,11 @@ import java.util.List;
  * @author Gerald.Hurdle@AlgonquinCollege.com
  */
 
-public class PlanetsResponse {
+public class GetPlanets {
 
-    private List<Planet> planets;
+    public List<Planet> planets;
 
-    public PlanetsResponse() { super(); planets = new ArrayList<>(); }
+    public GetPlanets() { super(); planets = new ArrayList<>(); }
 
     public List<Planet> getPlanets() { return planets; }
 }
