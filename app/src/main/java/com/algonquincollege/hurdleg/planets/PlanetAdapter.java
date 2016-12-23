@@ -99,7 +99,7 @@ public class PlanetAdapter extends ArrayAdapter<Planet> {
             Planet planet = container.planet;
 
             try {
-                String imageUrl = MainActivity.IMAGES_BASE_URL + planet.getImage();
+                String imageUrl = MainActivity.BASE_URL + planet.getImage();
                 InputStream in = (InputStream) new URL(imageUrl).getContent();
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
                 planet.setBitmap(bitmap);

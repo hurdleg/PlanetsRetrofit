@@ -38,13 +38,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class MainActivity extends ListActivity {
 
-    // URLs to my RESTful API Service hosted on my Bluemix account.
-    public static final String BASE_URL = "https://planets-hurdleg.mybluemix.net";
-    public static final String IMAGES_BASE_URL = "https://planets-hurdleg.mybluemix.net/";
+    private static final Boolean LOCALHOST = true;
+    public  static final String  BASE_URL;
 
     private ProgressBar pb;
 
     private List<Planet> planetList;
+
+    static {
+        BASE_URL = LOCALHOST ? "http://10.0.2.2:3000/" : "https://planets-hurdleg.mybluemix.net/";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,16 +97,16 @@ public class MainActivity extends ListActivity {
 
         PlanetsAPI api = retrofit.create(PlanetsAPI.class);
 
-        Call<GetPlanets> call = api.getPlanets();
-        call.enqueue(new Callback<GetPlanets>() {
+        Call<List<Planet>> call = api.getPlanets();
+        call.enqueue(new Callback<List<Planet>>() {
             @Override
-            public void onResponse(Call<GetPlanets> call, Response<GetPlanets> response) {
-                planetList = response.body().getPlanets();
+            public void onResponse(Call<List<Planet>> call, Response<List<Planet>> response) {
+                planetList = response.body();
                 updateDisplay();
             }
 
             @Override
-            public void onFailure(Call<GetPlanets> call, Throwable t) {
+            public void onFailure(Call<List<Planet>> call, Throwable t) {
                 Log.e( "RETROFIT", "Retrofit Error: " + t.toString() );
                 Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
             }
