@@ -1,14 +1,12 @@
 package com.algonquincollege.hurdleg.planets;
 
-import java.io.InputStream;
-import java.net.URL;
+
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -19,6 +17,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.algonquincollege.hurdleg.planets.model.Planet;
+import com.algonquincollege.hurdleg.planets.retrofit.PlanetsAPI;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.algonquincollege.hurdleg.planets.MainActivity.BASE_URL;
 
 /**
  * Purpose: customize the Planet cell for each planet displayed in the ListActivity (i.e. MainActivity).
@@ -31,13 +39,13 @@ import com.algonquincollege.hurdleg.planets.model.Planet;
  * @author Gerald.Hurdle@AlgonquinCollege.com
  *
  * Reference: based on LazyLoad in "Connecting Android Apps to RESTful Web Services" with David Gassner
+ * Reference: https://www.androidtutorialpoint.com/networking/android-retrofit-2-0-tutorial-retrofit-android-example-download-image-url-display-android-device-screen/
  */
 public class PlanetAdapter extends ArrayAdapter<Planet> {
 
     private Context context;
     private List<Planet> planetList;
 
-    // TODO: cache the binary image for each planet
     private LruCache<Integer, Bitmap> imageCache;
 
     public PlanetAdapter(Context context, int resource, List<Planet> objects) {
@@ -45,7 +53,6 @@ public class PlanetAdapter extends ArrayAdapter<Planet> {
         this.context = context;
         this.planetList = objects;
 
-        // TODO: instantiate the imageCache
         final int maxMemory = (int)(Runtime.getRuntime().maxMemory() /1024);
         final int cacheSize = maxMemory / 8;
         imageCache = new LruCache<>(cacheSize);
@@ -56,70 +63,48 @@ public class PlanetAdapter extends ArrayAdapter<Planet> {
 
         LayoutInflater inflater =
                 (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.item_planet, parent, false);
+        final View view = inflater.inflate(R.layout.item_planet, parent, false);
 
         //Display planet name in the TextView widget
-        Planet planet = planetList.get(position);
+        final Planet planet = planetList.get(position);
         TextView tv = (TextView) view.findViewById(R.id.textView1);
         tv.setText(planet.getName());
 
-        // TODO: Display planet photo in ImageView widget
         Bitmap bitmap = imageCache.get(planet.getPlanetId());
         if (bitmap != null) {
             Log.i( "PLANETS", planet.getName() + "\tbitmap in cache");
             ImageView image = (ImageView) view.findViewById(R.id.imageView1);
-            image.setImageBitmap(planet.getBitmap());
+            image.setImageBitmap(bitmap);
         }
         else {
-            Log.i( "PLANETS", planet.getName() + "\tfetching bitmap using AsyncTask");
-            PlanetAndView container = new PlanetAndView();
-            container.planet = planet;
-            container.view = view;
+            //TODO: Retrofit to get the planet's image
+            Log.i( "PLANETS", planet.getName() + "\tfetching bitmap using Retrofit");
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-            ImageLoader loader = new ImageLoader();
-            loader.execute(container);
+            PlanetsAPI service = retrofit.create(PlanetsAPI.class);
+
+            Call<ResponseBody> call = service.getPlanetImage(planet.getPlanetId());
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                    planet.setBitmap(bitmap);
+                    ImageView image = (ImageView) view.findViewById(R.id.imageView1);
+                    image.setImageBitmap(bitmap);
+                    imageCache.put(planet.getPlanetId(), bitmap);
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.d("onFailure", t.getLocalizedMessage());
+                }
+            });
         }
 
         return view;
-    }
-
-    // container for AsyncTask params
-    private class PlanetAndView {
-        protected Planet planet;
-        protected View view;
-        protected Bitmap bitmap;
-    }
-
-    private class ImageLoader extends AsyncTask<PlanetAndView, Void, PlanetAndView> {
-
-        @Override
-        protected PlanetAndView doInBackground(PlanetAndView... params) {
-
-            PlanetAndView container = params[0];
-            Planet planet = container.planet;
-
-            try {
-                String imageUrl = MainActivity.BASE_URL + planet.getImage();
-                InputStream in = (InputStream) new URL(imageUrl).getContent();
-                Bitmap bitmap = BitmapFactory.decodeStream(in);
-                planet.setBitmap(bitmap);
-                in.close();
-                container.bitmap = bitmap;
-                return container;
-            } catch (Exception e) {
-                System.err.println("IMAGE: " + planet.getName() );
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(PlanetAndView result) {
-            ImageView image = (ImageView) result.view.findViewById(R.id.imageView1);
-            image.setImageBitmap(result.bitmap);
-//            result.planet.setBitmap(result.bitmap);
-            imageCache.put(result.planet.getPlanetId(), result.bitmap);
-        }
     }
 }
