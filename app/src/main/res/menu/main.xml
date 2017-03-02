@@ -4,4 +4,19 @@
         android:title="@string/get_data"
         android:orderInCategory="100"
         android:showAsAction="always"/>
+    <item android:id="@+id/action_post_data"
+        android:title="Create Pluto"
+        android:icon="@android:drawable/ic_menu_add"
+        android:orderInCategory="120"
+        android:showAsAction="always"/>
+    <item android:id="@+id/action_put_data"
+        android:title="Update Pluto"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:orderInCategory="130"
+        android:showAsAction="always"/>
+    <item android:id="@+id/action_delete_data"
+        android:title="Delete Pluto"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:orderInCategory="140"
+        android:showAsAction="always"/>
 </menu>

@@ -39,7 +39,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class MainActivity extends ListActivity {
 
+    private static       PlanetsAPI API;
     private static final Boolean LOCALHOST = false;
+
     public  static final String  BASE_URL;
 
     private ProgressBar pb;
@@ -69,7 +71,15 @@ public class MainActivity extends ListActivity {
                 Toast.makeText(MainActivity.this, theSelectedPlanet.getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        API = retrofit.create(PlanetsAPI.class);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -85,6 +95,31 @@ public class MainActivity extends ListActivity {
                 Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
             }
         }
+
+        if (item.getItemId() == R.id.action_post_data) {
+            if (isOnline()) {
+                createPlanet();
+            } else {
+                Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if (item.getItemId() == R.id.action_put_data) {
+            if (isOnline()) {
+                updatePlanet();
+            } else {
+                Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if (item.getItemId() == R.id.action_delete_data) {
+            if (isOnline()) {
+                deletePlanet();
+            } else {
+                Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+            }
+        }
+
         return false;
     }
 
@@ -96,14 +131,7 @@ public class MainActivity extends ListActivity {
     private void requestData() {
         setProgressBarIndeterminateVisibility(true);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        PlanetsAPI api = retrofit.create(PlanetsAPI.class);
-
-        Call<List<Planet>> call = api.getPlanets();
+        Call<List<Planet>> call = API.getPlanets();
         call.enqueue(new Callback<List<Planet>>() {
             @Override
             public void onResponse(Call<List<Planet>> call, Response<List<Planet>> response) {
@@ -115,6 +143,85 @@ public class MainActivity extends ListActivity {
 
             @Override
             public void onFailure(Call<List<Planet>> call, Throwable t) {
+                Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
+                Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    private void createPlanet() {
+        Planet planet = new Planet();
+        planet.setPlanetId( 0 );
+        planet.setName( "Pluto" );
+        planet.setOverview( "I miss Pluto!" );
+        planet.setImage( "images/neptune.png" );
+        planet.setDescription( "Pluto was stripped of planet status :(" );
+        planet.setDistanceFromSun( 39.5f );
+        planet.setNumberOfMoons( 0 );
+
+        Call<Planet> call = API.createPlanet(planet);
+        call.enqueue( new Callback<Planet>() {
+            @Override
+            public void onResponse(Call<Planet> call, Response<Planet> response) {
+                if ( response.isSuccessful() ) {
+                    Toast.makeText(MainActivity.this, "Added Pluto", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Planet> call, Throwable t) {
+                Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
+                Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deletePlanet() {
+        Call<Void> call = API.deletePlanet( 8 );
+        call.enqueue( new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if ( response.isSuccessful() ) {
+                    Toast.makeText(MainActivity.this, "Deleted Pluto", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
+                Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void updatePlanet() {
+        Planet planet = new Planet();
+        planet.setPlanetId( 8 );
+        planet.setName( "hurdleg" );
+        planet.setOverview( "hurdleg" );
+        planet.setImage( "images/neptune.png" );
+        planet.setDescription( "hurdleg" );
+        planet.setDistanceFromSun( 39.5f );
+        planet.setNumberOfMoons( 0 );
+
+        Call<Planet> call = API.updatePlanet( 8, planet );
+        call.enqueue( new Callback<Planet>() {
+            @Override
+            public void onResponse(Call<Planet> call, Response<Planet> response) {
+                if ( response.isSuccessful() ) {
+                    Toast.makeText(MainActivity.this, "Updated Pluto", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Planet> call, Throwable t) {
                 Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
                 Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
             }
