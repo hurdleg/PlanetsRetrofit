@@ -14,7 +14,7 @@ import android.graphics.Bitmap;
  *   distance from the Sun
  *   number of moons
  *
- * Compare this Java class to JSON object: https://planets-hurdleg.mybluemix.net/planets/2
+ * Compare this Java class to JSON object: https://planets.mybluemix.net/planets/2
  *
  * Pro-Tip: I used Android Studio IDE to generate the getters & setters. For details:
  *          Canvas > Modules > Resources > How to Generate Getters and Setters

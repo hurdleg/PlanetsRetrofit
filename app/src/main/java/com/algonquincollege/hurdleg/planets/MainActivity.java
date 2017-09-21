@@ -49,7 +49,7 @@ public class MainActivity extends ListActivity {
     private PlanetAdapter planetAdapter;
 
     static {
-        BASE_URL = LOCALHOST ? "http://10.0.2.2:3000/" : "https://planets-hurdleg.mybluemix.net/";
+        BASE_URL = LOCALHOST ? "http://10.0.2.2:3000/" : "https://planets.mybluemix.net/";
     }
 
     @Override
