@@ -1,6 +1,7 @@
 package com.algonquincollege.hurdleg.planets;
 
 import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,7 +15,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.algonquincollege.hurdleg.planets.model.Planet;
+import com.algonquincollege.hurdleg.planets.model.PlanetPOJO;
 import com.algonquincollege.hurdleg.planets.retrofit.PlanetsAPI;
 
 import java.util.ArrayList;
@@ -40,16 +41,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends ListActivity {
 
     private static       PlanetsAPI API;
-    private static final Boolean LOCALHOST = false;
+    private static final Boolean    IS_LOCALHOST;
 
-    public  static final String  BASE_URL;
+    public  static final String     BASE_URL;
 
-    private ProgressBar pb;
+    private ProgressBar   pb;
 
     private PlanetAdapter planetAdapter;
 
     static {
-        BASE_URL = LOCALHOST ? "http://10.0.2.2:3000/" : "https://planets.mybluemix.net/";
+        IS_LOCALHOST = false;
+        BASE_URL = IS_LOCALHOST ? "http://10.0.2.2:3000/" : "https://planets.mybluemix.net/";
     }
 
     @Override
@@ -60,14 +62,14 @@ public class MainActivity extends ListActivity {
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
 
-        planetAdapter = new PlanetAdapter(this, R.layout.item_planet, new ArrayList<Planet>() );
+        planetAdapter = new PlanetAdapter(this, R.layout.item_planet, new ArrayList<PlanetPOJO>() );
         getListView().setAdapter( planetAdapter );
 
         getListView().setChoiceMode( ListView.CHOICE_MODE_SINGLE );
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Planet theSelectedPlanet = planetAdapter.getItem( position );
+                PlanetPOJO theSelectedPlanet = planetAdapter.getItem( position );
                 Toast.makeText(MainActivity.this, theSelectedPlanet.getName(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -123,7 +125,7 @@ public class MainActivity extends ListActivity {
         return false;
     }
 
-    // TODO: Retrofit
+    // TODO #3 - GET /planets with Retrofit
     //       Previous code is no longer needed.
     //         - replaces AsyncTask that retrieves the data
     //         - parses the data; no longer need class parsers.PlanetJSONParser.java
@@ -131,10 +133,10 @@ public class MainActivity extends ListActivity {
     private void requestData() {
         setProgressBarIndeterminateVisibility(true);
 
-        Call<List<Planet>> call = API.getPlanets();
-        call.enqueue(new Callback<List<Planet>>() {
+        Call<List<PlanetPOJO>> call = API.getPlanets();
+        call.enqueue(new Callback<List<PlanetPOJO>>() {
             @Override
-            public void onResponse(Call<List<Planet>> call, Response<List<Planet>> response) {
+            public void onResponse(Call<List<PlanetPOJO>> call, Response<List<PlanetPOJO>> response) {
                 setProgressBarIndeterminateVisibility(true);
 
                 planetAdapter.clear();
@@ -142,28 +144,28 @@ public class MainActivity extends ListActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Planet>> call, Throwable t) {
+            public void onFailure(Call<List<PlanetPOJO>> call, Throwable t) {
                 Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
                 Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
             }
         });
     }
 
-
+    // TODO #4 - POST /planets with Retrofit
     private void createPlanet() {
-        Planet planet = new Planet();
+        PlanetPOJO planet = new PlanetPOJO();
         planet.setPlanetId( 0 );
         planet.setName( "Pluto" );
         planet.setOverview( "I miss Pluto!" );
-        planet.setImage( "images/neptune.png" );
+        planet.setImage( "images/noimagefound.jpg" );
         planet.setDescription( "Pluto was stripped of planet status :(" );
-        planet.setDistanceFromSun( 39.5f );
-        planet.setNumberOfMoons( 0 );
+        planet.setDistance_from_sun( 39.d );
+        planet.setNumber_of_moons( 5 );
 
-        Call<Planet> call = API.createPlanet(planet);
-        call.enqueue( new Callback<Planet>() {
+        Call<PlanetPOJO> call = API.createPlanet(planet);
+        call.enqueue( new Callback<PlanetPOJO>() {
             @Override
-            public void onResponse(Call<Planet> call, Response<Planet> response) {
+            public void onResponse(Call<PlanetPOJO> call, Response<PlanetPOJO> response) {
                 if ( response.isSuccessful() ) {
                     Toast.makeText(MainActivity.this, "Added Pluto", Toast.LENGTH_SHORT).show();
                 } else {
@@ -172,13 +174,14 @@ public class MainActivity extends ListActivity {
             }
 
             @Override
-            public void onFailure(Call<Planet> call, Throwable t) {
+            public void onFailure(Call<PlanetPOJO> call, Throwable t) {
                 Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
                 Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    // TODO #6 - DELETE /planets/8 with Retrofit
     private void deletePlanet() {
         Call<Void> call = API.deletePlanet( 8 );
         call.enqueue( new Callback<Void>() {
@@ -199,20 +202,21 @@ public class MainActivity extends ListActivity {
         });
     }
 
+    // TODO #5 - PUT /planets/8 with Retrofit
     private void updatePlanet() {
-        Planet planet = new Planet();
+        PlanetPOJO planet = new PlanetPOJO();
         planet.setPlanetId( 8 );
         planet.setName( "hurdleg" );
         planet.setOverview( "hurdleg" );
-        planet.setImage( "images/neptune.png" );
+        planet.setImage( "images/pluto.jpeg" );
         planet.setDescription( "hurdleg" );
-        planet.setDistanceFromSun( 39.5f );
-        planet.setNumberOfMoons( 0 );
+        planet.setDistance_from_sun( 39.5d );
+        planet.setNumber_of_moons( 5 );
 
-        Call<Planet> call = API.updatePlanet( 8, planet );
-        call.enqueue( new Callback<Planet>() {
+        Call<PlanetPOJO> call = API.updatePlanet( 8, planet );
+        call.enqueue( new Callback<PlanetPOJO>() {
             @Override
-            public void onResponse(Call<Planet> call, Response<Planet> response) {
+            public void onResponse(Call<PlanetPOJO> call, Response<PlanetPOJO> response) {
                 if ( response.isSuccessful() ) {
                     Toast.makeText(MainActivity.this, "Updated Pluto", Toast.LENGTH_SHORT).show();
                 } else {
@@ -221,7 +225,7 @@ public class MainActivity extends ListActivity {
             }
 
             @Override
-            public void onFailure(Call<Planet> call, Throwable t) {
+            public void onFailure(Call<PlanetPOJO> call, Throwable t) {
                 Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
                 Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
             }

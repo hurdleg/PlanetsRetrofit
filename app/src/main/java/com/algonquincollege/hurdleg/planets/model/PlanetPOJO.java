@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 /**
  * Model a planet of our solar system.
  *
- * A Planet has the following properties:
+ * A PlanetPOJO has the following properties:
  *   planetId
  *   name
  *   overview
@@ -21,14 +21,14 @@ import android.graphics.Bitmap;
  *
  * @author Gerald.Hurdle@AlgonquinCollege.com
  */
-public class Planet {
+public class PlanetPOJO {
     private int planetId;
     private String name;
     private String overview;
     private String image;
     private String description;
-    private double distanceFromSun;
-    private int numberOfMoons;
+    private double distance_from_sun;
+    private int number_of_moons;
     private Bitmap bitmap;
 
     public int getPlanetId() { return planetId; }
@@ -46,11 +46,11 @@ public class Planet {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public double getDistanceFromSun() { return distanceFromSun; }
-    public void setDistanceFromSun(double distanceFromSun) { this.distanceFromSun = distanceFromSun; }
+    public double getDistance_from_sun() { return distance_from_sun; }
+    public void setDistance_from_sun(double distance_from_sun) { this.distance_from_sun = distance_from_sun; }
 
-    public int getNumberOfMoons() { return numberOfMoons;}
-    public void setNumberOfMoons(int numberOfMoons) { this.numberOfMoons = numberOfMoons; }
+    public int getNumber_of_moons() { return number_of_moons;}
+    public void setNumber_of_moons(int number_of_moons) { this.number_of_moons = number_of_moons; }
 
     public Bitmap getBitmap() { return bitmap; }
     public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
