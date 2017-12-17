@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_get_data"
-        android:title="@string/get_data"
+    <item
+        android:id="@+id/action_get_data"
+        android:icon="@android:drawable/ic_menu_more"
         android:orderInCategory="100"
-        android:showAsAction="always"/>
+        android:showAsAction="always"
+        android:title="Fetch Data" />
     <item android:id="@+id/action_post_data"
         android:title="Create Pluto"
         android:icon="@android:drawable/ic_menu_add"
@@ -19,4 +21,10 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:orderInCategory="140"
         android:showAsAction="always"/>
+    <item
+        android:id="@+id/action_post_data_binary"
+        android:icon="@android:drawable/ic_menu_upload"
+        android:orderInCategory="150"
+        android:showAsAction="always"
+        android:title="Upload Image of Pluto" />
 </menu>

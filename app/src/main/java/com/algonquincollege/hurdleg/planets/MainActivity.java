@@ -1,8 +1,9 @@
 package com.algonquincollege.hurdleg.planets;
 
 import android.app.ListActivity;
-import android.app.LoaderManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -18,9 +19,13 @@ import android.widget.Toast;
 import com.algonquincollege.hurdleg.planets.model.PlanetPOJO;
 import com.algonquincollege.hurdleg.planets.retrofit.PlanetsAPI;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -125,6 +130,14 @@ public class MainActivity extends ListActivity {
             }
         }
 
+        if (item.getItemId() == R.id.action_post_data_binary) {
+            if (isOnline()) {
+                uploadImageFileOfPluto();
+            } else {
+                Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+            }
+        }
+
         return false;
     }
 
@@ -185,7 +198,7 @@ public class MainActivity extends ListActivity {
         });
     }
 
-    // TODO #6 - DELETE /planets/8 with Retrofit
+    // TODO #7 - DELETE /planets/8 with Retrofit
     private void deletePlanet() {
         Call<Void> call = API.deletePlanet( 8 );
         call.enqueue( new Callback<Void>() {
@@ -224,10 +237,43 @@ public class MainActivity extends ListActivity {
             @Override
             public void onResponse(Call<PlanetPOJO> call, Response<PlanetPOJO> response) {
                 if ( response.isSuccessful() ) {
-                    // to update Pluto: remove it from list, add updated version back to list
+                    // to update Pluto: a) remove it from list, b) add updated version
                     planetAdapter.remove(planet);
                     planetAdapter.add(response.body());
                     Toast.makeText(MainActivity.this, "Updated Pluto", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PlanetPOJO> call, Throwable t) {
+                Log.e( "RETROFIT", "Retrofit Error: " + t.getLocalizedMessage() );
+                Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // TODO #6 - POST /planets/8/image with Retrofit
+    private void uploadImageFileOfPluto() {
+        // convert drawable image to array of bytes
+        // hard-coded image from res/drawable
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.i_am_smiling);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 0, baos);
+
+        // create a request with Multipart in order to upload image
+        RequestBody requestBodyFile = RequestBody.create(MediaType.parse("image/jpeg"), baos.toByteArray());
+        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", "image", requestBodyFile);
+
+        // call API
+        Call<PlanetPOJO> call = API.uploadImageFileOfPluto(8, body);
+        call.enqueue( new Callback<PlanetPOJO>() {
+            @Override
+            public void onResponse(Call<PlanetPOJO> call, Response<PlanetPOJO> response) {
+                if ( response.isSuccessful() ) {
+                    planetAdapter.notifyDataSetChanged();
+                    Toast.makeText(MainActivity.this, "Uploaded Image File of Pluto", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
                 }

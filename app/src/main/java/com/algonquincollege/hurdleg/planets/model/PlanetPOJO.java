@@ -1,7 +1,5 @@
 package com.algonquincollege.hurdleg.planets.model;
 
-import android.graphics.Bitmap;
-
 /**
  * Model a planet of our solar system.
  *
