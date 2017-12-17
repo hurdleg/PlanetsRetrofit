@@ -80,6 +80,9 @@ public class MainActivity extends ListActivity {
                 .build();
 
         API = retrofit.create(PlanetsAPI.class);
+
+        // fetch the planet data, and display as list
+        requestData();
     }
 
     @Override
@@ -167,6 +170,7 @@ public class MainActivity extends ListActivity {
             @Override
             public void onResponse(Call<PlanetPOJO> call, Response<PlanetPOJO> response) {
                 if ( response.isSuccessful() ) {
+                    planetAdapter.add(response.body());
                     Toast.makeText(MainActivity.this, "Added Pluto", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
@@ -188,6 +192,8 @@ public class MainActivity extends ListActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if ( response.isSuccessful() ) {
+                    PlanetPOJO deletedPlanet = planetAdapter.getItem(8);
+                    planetAdapter.remove(deletedPlanet);
                     Toast.makeText(MainActivity.this, "Deleted Pluto", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
@@ -204,7 +210,7 @@ public class MainActivity extends ListActivity {
 
     // TODO #5 - PUT /planets/8 with Retrofit
     private void updatePlanet() {
-        PlanetPOJO planet = new PlanetPOJO();
+        final PlanetPOJO planet = new PlanetPOJO();
         planet.setPlanetId( 8 );
         planet.setName( "hurdleg" );
         planet.setOverview( "hurdleg" );
@@ -218,6 +224,9 @@ public class MainActivity extends ListActivity {
             @Override
             public void onResponse(Call<PlanetPOJO> call, Response<PlanetPOJO> response) {
                 if ( response.isSuccessful() ) {
+                    // to update Pluto: remove it from list, add updated version back to list
+                    planetAdapter.remove(planet);
+                    planetAdapter.add(response.body());
                     Toast.makeText(MainActivity.this, "Updated Pluto", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();

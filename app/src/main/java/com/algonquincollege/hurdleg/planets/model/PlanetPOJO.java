@@ -29,7 +29,6 @@ public class PlanetPOJO {
     private String description;
     private double distance_from_sun;
     private int number_of_moons;
-    private Bitmap bitmap;
 
     public int getPlanetId() { return planetId; }
     public void setPlanetId(int planetId) { this.planetId = planetId; }
@@ -52,6 +51,19 @@ public class PlanetPOJO {
     public int getNumber_of_moons() { return number_of_moons;}
     public void setNumber_of_moons(int number_of_moons) { this.number_of_moons = number_of_moons; }
 
-    public Bitmap getBitmap() { return bitmap; }
-    public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PlanetPOJO that = (PlanetPOJO) o;
+
+        return planetId == that.planetId;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return planetId;
+    }
 }
