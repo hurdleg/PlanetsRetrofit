@@ -1,4 +1,4 @@
-package com.algonquincollege.hurdleg.planets;
+package mad9132.planets;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -16,14 +16,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.algonquincollege.hurdleg.planets.model.PlanetPOJO;
-import com.algonquincollege.hurdleg.planets.retrofit.BasicAuthenticationInterceptor;
-import com.algonquincollege.hurdleg.planets.retrofit.PlanetsAPI;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import mad9132.planets.model.PlanetPOJO;
+import mad9132.planets.retrofit.BasicAuthenticationInterceptor;
+import mad9132.planets.retrofit.PlanetsAPI;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;

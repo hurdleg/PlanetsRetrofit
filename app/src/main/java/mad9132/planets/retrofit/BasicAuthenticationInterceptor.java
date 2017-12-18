@@ -1,4 +1,4 @@
-package com.algonquincollege.hurdleg.planets.retrofit;
+package mad9132.planets.retrofit;
 
 import java.io.IOException;
 

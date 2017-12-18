@@ -1,9 +1,8 @@
-package com.algonquincollege.hurdleg.planets.retrofit;
-
-import com.algonquincollege.hurdleg.planets.model.PlanetPOJO;
+package mad9132.planets.retrofit;
 
 import java.util.List;
 
+import mad9132.planets.model.PlanetPOJO;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;

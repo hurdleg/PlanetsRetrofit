@@ -1,4 +1,4 @@
-package com.algonquincollege.hurdleg.planets.model;
+package mad9132.planets.model;
 
 /**
  * Model a planet of our solar system.

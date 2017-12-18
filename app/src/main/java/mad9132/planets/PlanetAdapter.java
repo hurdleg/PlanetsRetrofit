@@ -1,5 +1,4 @@
-package com.algonquincollege.hurdleg.planets;
-
+package mad9132.planets;
 
 import java.util.List;
 
@@ -12,13 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.algonquincollege.hurdleg.planets.model.PlanetPOJO;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import mad9132.planets.model.PlanetPOJO;
 
-import static com.algonquincollege.hurdleg.planets.MainActivity.BASE_URL;
+import static mad9132.planets.MainActivity.BASE_URL;
+
 
 /**
  * Purpose: customize the PlanetPOJO cell for each planet displayed in the ListActivity (i.e. MainActivity).
