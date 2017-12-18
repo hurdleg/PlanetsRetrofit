@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.algonquincollege.hurdleg.planets.model.PlanetPOJO;
+import com.algonquincollege.hurdleg.planets.retrofit.BasicAuthenticationInterceptor;
 import com.algonquincollege.hurdleg.planets.retrofit.PlanetsAPI;
 
 import java.io.ByteArrayOutputStream;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,8 +81,15 @@ public class MainActivity extends ListActivity {
             }
         });
 
+        // TODO #4 - replace with your username + password
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new BasicAuthenticationInterceptor("bond007", "password"))
+                .build();
+
+        // TODO #5 - configure retrofit
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -141,7 +150,7 @@ public class MainActivity extends ListActivity {
         return false;
     }
 
-    // TODO #3 - GET /planets with Retrofit
+    // TODO #6 - GET /planets with Retrofit
     //       Previous code is no longer needed.
     //         - replaces AsyncTask that retrieves the data
     //         - parses the data; no longer need class parsers.PlanetJSONParser.java
@@ -167,7 +176,7 @@ public class MainActivity extends ListActivity {
         });
     }
 
-    // TODO #4 - POST /planets with Retrofit
+    // TODO #7 - POST /planets with Retrofit
     private void createPlanet() {
         PlanetPOJO planet = new PlanetPOJO();
         planet.setPlanetId( 0 );
@@ -198,7 +207,7 @@ public class MainActivity extends ListActivity {
         });
     }
 
-    // TODO #7 - DELETE /planets/8 with Retrofit
+    // TODO #10 - DELETE /planets/8 with Retrofit
     private void deletePlanet() {
         Call<Void> call = API.deletePlanet( 8 );
         call.enqueue( new Callback<Void>() {
@@ -221,7 +230,7 @@ public class MainActivity extends ListActivity {
         });
     }
 
-    // TODO #5 - PUT /planets/8 with Retrofit
+    // TODO #8 - PUT /planets/8 with Retrofit
     private void updatePlanet() {
         final PlanetPOJO planet = new PlanetPOJO();
         planet.setPlanetId( 8 );
@@ -254,7 +263,7 @@ public class MainActivity extends ListActivity {
         });
     }
 
-    // TODO #6 - POST /planets/8/image with Retrofit
+    // TODO #9 - POST /planets/8/image with Retrofit
     private void uploadImageFileOfPluto() {
         // convert drawable image to array of bytes
         // hard-coded image from res/drawable
