@@ -64,4 +64,11 @@ public class PlanetPOJO {
     public int hashCode() {
         return planetId;
     }
+
+    @Override
+    public String toString() {
+        return "PlanetPOJO{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

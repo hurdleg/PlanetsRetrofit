@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">Planets</string>
-    <string name="planet_name_placeholder">Planet name</string>
+    <string name="app_name">Planets (CRUD w/ Retrofit)</string>
 </resources>
