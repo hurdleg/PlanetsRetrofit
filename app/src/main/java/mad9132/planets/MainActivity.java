@@ -163,6 +163,11 @@ public class MainActivity extends Activity {
 
     // TODO #7 - POST /planets with Retrofit
     private void createPlanet() {
+        if (mPlanetAdapter.getItemCount() >= 9) {
+            Toast.makeText(MainActivity.this, "Pluto already exists!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         PlanetPOJO planet = new PlanetPOJO();
         planet.setPlanetId( 0 );
         planet.setName( "Pluto" );
