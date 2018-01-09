@@ -48,7 +48,7 @@ public class PlanetAdapter extends RecyclerView.Adapter<PlanetAdapter.ViewHolder
 
         holder.tvName.setText(aPlanet.getName());
 
-        String url = BASE_URL + "planets/" + aPlanet.getPlanetId() + "/image";
+        String url = BASE_URL + "/planets/" + aPlanet.getPlanetId() + "/image";
         // force picasso to fetch the planet's image from the internet, and not use the cache
         // handles the case when the image for Pluto is updated
         Picasso.with(mContext)

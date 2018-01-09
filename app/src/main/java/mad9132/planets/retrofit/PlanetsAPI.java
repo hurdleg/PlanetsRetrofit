@@ -4,6 +4,7 @@ import java.util.List;
 
 import mad9132.planets.model.PlanetPOJO;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -28,6 +29,16 @@ public interface PlanetsAPI {
 
     @POST("/planets")
     Call<PlanetPOJO> createPlanet(@Body PlanetPOJO newPlanet );
+
+    @Multipart
+    @POST("/planets/form")
+    Call<PlanetPOJO> createPlanetAndUploadImage(
+            @Part("name") RequestBody name,
+            @Part("overview") RequestBody overview,
+            @Part("description") RequestBody description,
+            @Part("number_of_moons") RequestBody numberOfMoons,
+            @Part("distance_from_sun") RequestBody distance_from_sun,
+            @Part MultipartBody.Part image);
 
     @DELETE("/planets/{planetId}")
     Call<Void> deletePlanet( @Path("planetId") int planetId );

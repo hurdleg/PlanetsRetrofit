@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 
     static {
         IS_LOCALHOST = false;
-        BASE_URL = IS_LOCALHOST ? "http://10.0.2.2:3000/" : "https://planets.mybluemix.net/";
+        BASE_URL = IS_LOCALHOST ? "http://10.0.2.2:3000" : "https://planets.mybluemix.net";
     }
 
     private PlanetAdapter mPlanetAdapter;
@@ -134,6 +134,14 @@ public class MainActivity extends Activity {
             }
         }
 
+        if (item.getItemId() == R.id.action_post_form) {
+            if (isOnline()) {
+                createPlanetAndUploadImage();
+            } else {
+                Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+            }
+        }
+
         return false;
     }
 
@@ -200,6 +208,11 @@ public class MainActivity extends Activity {
 
     // TODO #10 - DELETE /planets/8 with Retrofit
     private void deletePlanet() {
+        if (mPlanetAdapter.getItemCount() <= 8 ) {
+            Toast.makeText(MainActivity.this, "You need to create Pluto", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Call<Void> call = API.deletePlanet( 8 );
         call.enqueue( new Callback<Void>() {
             @Override
@@ -224,6 +237,11 @@ public class MainActivity extends Activity {
 
     // TODO #8 - PUT /planets/8 with Retrofit
     private void updatePlanet() {
+        if (mPlanetAdapter.getItemCount() <= 8 ) {
+            Toast.makeText(MainActivity.this, "You need to create Pluto", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final PlanetPOJO planet = new PlanetPOJO();
         planet.setPlanetId( 8 );
         planet.setName( "hurdleg" );
@@ -258,6 +276,11 @@ public class MainActivity extends Activity {
 
     // TODO #9 - POST /planets/8/image with Retrofit
     private void uploadImageFileOfPluto() {
+        if (mPlanetAdapter.getItemCount() <= 8 ) {
+            Toast.makeText(MainActivity.this, "You need to create Pluto", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // convert drawable image to array of bytes
         // hard-coded image from res/drawable
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.i_am_smiling);
@@ -289,6 +312,59 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    // TODO #11 - POST /planets/form with Retrofit (multipart form)
+    private void createPlanetAndUploadImage() {
+        if (mPlanetAdapter.getItemCount() >= 9) {
+            Toast.makeText(MainActivity.this, "Pluto already exists!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // convert drawable image to array of bytes
+        // hard-coded image from res/drawable
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.i_am_smiling);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 0, baos);
+
+        // create a request with Multipart in order to upload image
+        RequestBody requestBodyFile = RequestBody.create(MediaType.parse("image/jpeg"), baos.toByteArray());
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "image", requestBodyFile);
+
+        PlanetPOJO planet = new PlanetPOJO();
+        planet.setName( "pluto (form)" );
+        planet.setOverview( "I miss Pluto!" );
+        planet.setDescription( "Pluto was stripped of planet status :(" );
+        planet.setDistance_from_sun( 39.d );
+        planet.setNumber_of_moons( 5 );
+
+        RequestBody nameRB = RequestBody.create(MediaType.parse("text/plain"), planet.getName());
+        RequestBody overviewRB = RequestBody.create(MediaType.parse("text/plain"), planet.getOverview());
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), planet.getDescription());
+        RequestBody numberOfMoons = RequestBody.create(MediaType.parse("text/plain"), planet.getNumber_of_moons() + "");
+        RequestBody distanceFromSun = RequestBody.create(MediaType.parse("text/plain"), planet.getDistance_from_sun() + "");
+
+        Call<PlanetPOJO> call = API.createPlanetAndUploadImage(nameRB, overviewRB, description, numberOfMoons, distanceFromSun, body);
+        call.enqueue( new Callback<PlanetPOJO>() {
+            @Override
+            public void onResponse(Call<PlanetPOJO> call, Response<PlanetPOJO> response) {
+                if ( response.isSuccessful() ) {
+                    mPlanetAdapter.addPlanet(response.body());
+                    Log.i( TAG, "response to POST /planets :: " + response.body().toString() );
+                    Toast.makeText(MainActivity.this, "Added Pluto", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Error: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PlanetPOJO> call, Throwable t) {
+                Log.e( TAG, "Retrofit Error: " + t.getLocalizedMessage() );
+                Toast.makeText(MainActivity.this, "Retrofit Error", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
 
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
