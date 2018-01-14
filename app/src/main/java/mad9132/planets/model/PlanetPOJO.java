@@ -25,8 +25,8 @@ public class PlanetPOJO {
     private String overview;
     private String image;
     private String description;
-    private double distance_from_sun;
-    private int number_of_moons;
+    private double distanceFromSun;
+    private int numberOfMoons;
 
     public int getPlanetId() { return planetId; }
     public void setPlanetId(int planetId) { this.planetId = planetId; }
@@ -43,11 +43,11 @@ public class PlanetPOJO {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public double getDistance_from_sun() { return distance_from_sun; }
-    public void setDistance_from_sun(double distance_from_sun) { this.distance_from_sun = distance_from_sun; }
+    public double getDistanceFromSun() { return distanceFromSun; }
+    public void setDistanceFromSun(double distanceFromSun) { this.distanceFromSun = distanceFromSun; }
 
-    public int getNumber_of_moons() { return number_of_moons;}
-    public void setNumber_of_moons(int number_of_moons) { this.number_of_moons = number_of_moons; }
+    public int getNumberOfMoons() { return numberOfMoons;}
+    public void setNumberOfMoons(int numberOfMoons) { this.numberOfMoons = numberOfMoons; }
 
     @Override
     public boolean equals(Object o) {

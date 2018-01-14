@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
     private static final String     TAG = "CRUD-RETROFIT";
 
     static {
-        IS_LOCALHOST = false;
+        IS_LOCALHOST = true;
         BASE_URL = IS_LOCALHOST ? "http://10.0.2.2:3000" : "https://planets.mybluemix.net";
     }
 
@@ -182,8 +182,8 @@ public class MainActivity extends Activity {
         planet.setOverview( "I miss Pluto!" );
         planet.setImage( "images/noimagefound.jpg" );
         planet.setDescription( "Pluto was stripped of planet status :(" );
-        planet.setDistance_from_sun( 39.d );
-        planet.setNumber_of_moons( 5 );
+        planet.setDistanceFromSun( 39.d );
+        planet.setNumberOfMoons( 5 );
 
         Call<PlanetPOJO> call = API.createPlanet(planet);
         call.enqueue( new Callback<PlanetPOJO>() {
@@ -248,8 +248,8 @@ public class MainActivity extends Activity {
         planet.setOverview( "hurdleg" );
         planet.setImage( "images/pluto.jpeg" );
         planet.setDescription( "hurdleg" );
-        planet.setDistance_from_sun( 39.5d );
-        planet.setNumber_of_moons( 5 );
+        planet.setDistanceFromSun( 39.5d );
+        planet.setNumberOfMoons( 5 );
 
         Call<PlanetPOJO> call = API.updatePlanet( 8, planet );
         call.enqueue( new Callback<PlanetPOJO>() {
@@ -289,7 +289,7 @@ public class MainActivity extends Activity {
 
         // create a request with Multipart in order to upload image
         RequestBody requestBodyFile = RequestBody.create(MediaType.parse("image/jpeg"), baos.toByteArray());
-        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", "image", requestBodyFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "i_am_smiling.jpg", requestBodyFile);
 
         // call API
         Call<PlanetPOJO> call = API.uploadImageFileOfPluto(8, body);
@@ -328,20 +328,20 @@ public class MainActivity extends Activity {
 
         // create a request with Multipart in order to upload image
         RequestBody requestBodyFile = RequestBody.create(MediaType.parse("image/jpeg"), baos.toByteArray());
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "image", requestBodyFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", "i_am_smiling.jpg", requestBodyFile);
 
         PlanetPOJO planet = new PlanetPOJO();
         planet.setName( "pluto (form)" );
         planet.setOverview( "I miss Pluto!" );
         planet.setDescription( "Pluto was stripped of planet status :(" );
-        planet.setDistance_from_sun( 39.d );
-        planet.setNumber_of_moons( 5 );
+        planet.setDistanceFromSun( 39.d );
+        planet.setNumberOfMoons( 5 );
 
         RequestBody nameRB = RequestBody.create(MediaType.parse("text/plain"), planet.getName());
         RequestBody overviewRB = RequestBody.create(MediaType.parse("text/plain"), planet.getOverview());
         RequestBody description = RequestBody.create(MediaType.parse("text/plain"), planet.getDescription());
-        RequestBody numberOfMoons = RequestBody.create(MediaType.parse("text/plain"), planet.getNumber_of_moons() + "");
-        RequestBody distanceFromSun = RequestBody.create(MediaType.parse("text/plain"), planet.getDistance_from_sun() + "");
+        RequestBody numberOfMoons = RequestBody.create(MediaType.parse("text/plain"), planet.getNumberOfMoons() + "");
+        RequestBody distanceFromSun = RequestBody.create(MediaType.parse("text/plain"), planet.getDistanceFromSun() + "");
 
         Call<PlanetPOJO> call = API.createPlanetAndUploadImage(nameRB, overviewRB, description, numberOfMoons, distanceFromSun, body);
         call.enqueue( new Callback<PlanetPOJO>() {

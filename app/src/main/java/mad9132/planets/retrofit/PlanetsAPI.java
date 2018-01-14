@@ -36,8 +36,8 @@ public interface PlanetsAPI {
             @Part("name") RequestBody name,
             @Part("overview") RequestBody overview,
             @Part("description") RequestBody description,
-            @Part("number_of_moons") RequestBody numberOfMoons,
-            @Part("distance_from_sun") RequestBody distance_from_sun,
+            @Part("numberOfMoons") RequestBody numberOfMoons,
+            @Part("distanceFromSun") RequestBody distanceFromSun,
             @Part MultipartBody.Part image);
 
     @DELETE("/planets/{planetId}")
