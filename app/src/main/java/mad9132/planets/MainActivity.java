@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
     private static final String     TAG = "CRUD-RETROFIT";
 
     static {
-        IS_LOCALHOST = true;
+        IS_LOCALHOST = false;
         BASE_URL = IS_LOCALHOST ? "http://10.0.2.2:3000" : "https://planets.mybluemix.net";
     }
 
