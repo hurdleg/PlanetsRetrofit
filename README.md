@@ -1,5 +1,5 @@
 ## Planets Retrofit ##
-  Making HTTP requests with Square's Retrofit (https://square.github.io/retrofit/)
+  Making HTTP requests with Square's Retrofit (<https://square.github.io/retrofit/>)
 
 ## Usage ##
 
@@ -35,7 +35,7 @@
 
   Available from GitHub:
 
-  https://github.com/hurdleg/PlanetsRetrofit.git
+  <https://github.com/hurdleg/PlanetsRetrofit.git>
 
 ## Reference ##
 
